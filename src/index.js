@@ -12,7 +12,7 @@ import './rollbar';
 import './index.less';
 // 1. Initialize
 const app = dva({
-  history: createHistory(),
+  history: createHistory()
 });
 
 // 2. Plugins
@@ -27,4 +27,4 @@ app.router(require('./router').default);
 // 5. Start
 app.start('#root');
 
-export default app._store;  // eslint-disable-line
+export default app._store; // eslint-disable-line

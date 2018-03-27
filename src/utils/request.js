@@ -52,6 +52,7 @@ export default function request(url, options) {
       newOptions.headers = {
         Accept: 'application/json',
         'Content-Type': 'application/json; charset=utf-8',
+        'Access-Control-Allow-Origin': '*',
         ...newOptions.headers,
       };
       newOptions.body = JSON.stringify(newOptions.body);
@@ -80,15 +81,12 @@ export default function request(url, options) {
         dispatch({
           type: 'login/logout',
         });
-        return;
       }
       if (status === 403) {
         dispatch(routerRedux.push('/exception/403'));
-        return;
       }
       if (status <= 504 && status >= 500) {
         dispatch(routerRedux.push('/exception/500'));
-        return;
       }
       if (status >= 404 && status < 422) {
         dispatch(routerRedux.push('/exception/404'));

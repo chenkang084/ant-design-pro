@@ -1,5 +1,6 @@
 import { stringify } from 'qs';
 import request from '../utils/request';
+import config from '../config';
 
 export async function queryProjectNotice() {
   return request('/api/project/notice');
@@ -61,7 +62,12 @@ export async function queryFakeList(params) {
 }
 
 export async function fakeAccountLogin(params) {
-  return request('/api/login/account', {
+  // return request('/api/login/account', {
+  //   method: 'POST',
+  //   body: params,
+  // });
+  return openStackApi({
+    url: '/api/identity/v3/auth/tokens',
     method: 'POST',
     body: params,
   });
@@ -76,4 +82,14 @@ export async function fakeRegister(params) {
 
 export async function queryNotices() {
   return request('/api/notices');
+}
+
+export async function openStackApi({ url, method = 'GET', body }) {
+  let opts;
+  if (method.toUpperCase() === 'GET') {
+    opts = { url, method };
+  } else {
+    opts = { url, method, body };
+  }
+  return request(config.api.openStack + url, opts);
 }

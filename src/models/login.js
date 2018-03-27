@@ -12,6 +12,7 @@ export default {
 
   effects: {
     *login({ payload }, { call, put }) {
+      // debugger;
       const response = yield call(fakeAccountLogin, payload);
       yield put({
         type: 'changeLoginStatus',
@@ -27,7 +28,9 @@ export default {
       try {
         // get location pathname
         const urlParams = new URL(window.location.href);
-        const pathname = yield select(state => state.routing.location.pathname);
+        const pathname = yield select(
+          (state) => state.routing.location.pathname, // eslint-disable-line
+        );
         // add the parameters in the url
         urlParams.searchParams.set('redirect', pathname);
         window.history.replaceState(null, 'login', urlParams.href);

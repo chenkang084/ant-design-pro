@@ -12,7 +12,7 @@ export default {
     },
   },
   alias: {
-    'components': path.resolve(__dirname, 'src/components/'),
+    components: path.resolve(__dirname, 'src/components/'),
   },
   ignoreMomentLocale: true,
   theme: './src/theme.js',
@@ -22,4 +22,11 @@ export default {
   disableDynamicImport: false,
   publicPath: '/',
   hash: true,
+  proxy: {
+    '/api/identity': {
+      target: 'http://10.4.185.108:9001/',
+      changeOrigin: true,
+      // pathRewrite: { '^/api': '' },
+    },
+  },
 };

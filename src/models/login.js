@@ -1,5 +1,5 @@
 import { routerRedux } from 'dva/router';
-import { fakeAccountLogin } from '../services/api';
+import { accountLogin, accountLogout } from '../services/api';
 import { setAuthority } from '../utils/authority';
 import { reloadAuthorized } from '../utils/Authorized';
 
@@ -12,8 +12,9 @@ export default {
 
   effects: {
     *login({ payload }, { call, put }) {
-      // debugger;
-      const response = yield call(fakeAccountLogin, payload);
+      const response = yield call(accountLogin, payload);
+      // hard code the user
+      response.currentAuthority = 'admin';
       yield put({
         type: 'changeLoginStatus',
         payload: response,
@@ -24,26 +25,31 @@ export default {
         yield put(routerRedux.push('/'));
       }
     },
-    *logout(_, { put, select }) {
+    *logout(_, { call, put, select }) {
       try {
-        // get location pathname
-        const urlParams = new URL(window.location.href);
-        const pathname = yield select(
-          (state) => state.routing.location.pathname, // eslint-disable-line
-        );
-        // add the parameters in the url
-        urlParams.searchParams.set('redirect', pathname);
-        window.history.replaceState(null, 'login', urlParams.href);
-      } finally {
-        yield put({
-          type: 'changeLoginStatus',
-          payload: {
-            status: false,
-            currentAuthority: 'guest',
-          },
-        });
-        reloadAuthorized();
-        yield put(routerRedux.push('/user/login'));
+        const response = yield call(accountLogout);
+        if (response.status === 'ok') {
+          // get location pathname
+          const urlParams = new URL(window.location.href);
+          const pathname = yield select(
+            (state) => state.routing.location.pathname, // eslint-disable-line
+          );
+          // add the parameters in the url
+          urlParams.searchParams.set('redirect', pathname);
+          window.history.replaceState(null, 'login', urlParams.href);
+
+          yield put({
+            type: 'changeLoginStatus',
+            payload: {
+              status: false,
+              currentAuthority: 'guest',
+            },
+          });
+          reloadAuthorized();
+          yield put(routerRedux.push('/user/login'));
+        }
+      } catch (e) {
+        console.log(e);
       }
     },
   },
@@ -54,7 +60,7 @@ export default {
       return {
         ...state,
         status: payload.status,
-        type: payload.type,
+        type: payload.type || 'account',
       };
     },
   },

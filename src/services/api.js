@@ -61,15 +61,18 @@ export async function queryFakeList(params) {
   return request(`/api/fake_list?${stringify(params)}`);
 }
 
-export async function fakeAccountLogin(params) {
-  // return request('/api/login/account', {
-  //   method: 'POST',
-  //   body: params,
-  // });
+export async function accountLogin(params) {
   return openStackApi({
     url: '/api/identity/v3/auth/tokens',
     method: 'POST',
     body: params,
+  });
+}
+
+export async function accountLogout() {
+  return openStackApi({
+    url: '/api/identity/v3/auth/tokens',
+    method: 'DELETE',
   });
 }
 

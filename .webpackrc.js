@@ -24,7 +24,7 @@ export default {
   hash: true,
   proxy: {
     '/api/identity': {
-      target: 'http://10.4.185.108:9001/',
+      target: 'http://10.240.217.223:9001/',
       changeOrigin: true,
       // pathRewrite: { '^/api': '' },
     },
